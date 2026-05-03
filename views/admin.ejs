@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin Panel</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Roboto, Arial, sans-serif;
+            background: #f1f5f9;
+            padding: 30px 20px;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 24px;
+            padding: 25px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+        }
+        h2 {
+            margin-bottom: 20px;
+            color: #0f172a;
+            font-size: 24px;
+        }
+        .back {
+            display: inline-block;
+            margin-bottom: 20px;
+            background: #0ea5e9;
+            color: white;
+            text-decoration: none;
+            padding: 6px 16px;
+            border-radius: 30px;
+            font-size: 14px;
+        }
+        .back:hover { background: #0284c7; }
+        .msg {
+            background: #dcfce7;
+            color: #166534;
+            padding: 10px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #e2e8f0;
+            padding: 10px 12px;
+            text-align: left;
+        }
+        th {
+            background: #f8fafc;
+            font-weight: 600;
+        }
+        .active { color: #10b981; font-weight: bold; }
+        .inactive { color: #ef4444; }
+        .delete-btn {
+            background: #ef4444;
+            color: white;
+            border: none;
+            padding: 4px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 13px;
+        }
+        .delete-btn:hover { background: #dc2626; }
+        .no-users {
+            text-align: center;
+            padding: 30px;
+            color: #64748b;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <a href="/logout" class="back">🚪 Logout</a>
+    <h2>⚙️ Admin Panel – Users</h2>
+
+    <% if (message) { %>
+        <div class="msg"><%= message %></div>
+    <% } %>
+
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Status (last 7 days)</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% if (users && users.length > 0) { %>
+                <% users.forEach(u => { %>
+                    <tr>
+                        <td><%= u.id %></td>
+                        <td><%= u.name %></td>
+                        <td><%= u.email %></td>
+                        <td><%= u.role %></td>
+                        <td class="<%= u.active ? 'active' : 'inactive' %>">
+                            <%= u.active ? '🟢 Active' : '🔴 Inactive' %>
+                        </td>
+                        <td>
+                            <form method="POST" action="/admin/delete/<%= u.id %>" onsubmit="return confirm('Delete user &quot;<%= u.name %>&quot;? All habits and logs will be removed.')">
+                                <button type="submit" class="delete-btn">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                <% }) %>
+            <% } else { %>
+                <tr><td colspan="6" class="no-users">No users found.</td></tr>
+            <% } %>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>
