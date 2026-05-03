@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Profile</title>
+
+<style>
+body{
+    margin:0;
+    font-family:Arial;
+    background:#f1f5f9;
+}
+
+.wrapper{
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+.card{
+    width:350px;
+    background:white;
+    padding:25px;
+    border-radius:15px;
+    box-shadow:0 15px 35px rgba(0,0,0,0.1);
+}
+
+input{
+    width:100%;
+    padding:10px;
+    margin-top:10px;
+    border-radius:8px;
+    border:1px solid #ccc;
+}
+
+button{
+    width:100%;
+    padding:10px;
+    margin-top:10px;
+    border:none;
+    border-radius:8px;
+    background:#38bdf8;
+    color:white;
+}
+
+.error{
+    color:red;
+    font-size:12px;
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="wrapper">
+
+<div class="card">
+
+<h2>Profile</h2>
+
+<form method="POST" action="/profile/update">
+
+<input name="name" value="<%= user.name %>">
+<div class="error"><%= errors?.name || '' %></div>
+
+<input name="email" value="<%= user.email %>">
+<div class="error"><%= errors?.email || '' %></div>
+
+<input name="password" type="password" placeholder="New password">
+<div class="error"><%= errors?.password || '' %></div>
+
+<button>Update</button>
+
+</form>
+
+<a href="/"><button style="background:#94a3b8;">Back</button></a>
+<a href="/logout"><button style="background:red;">Logout</button></a>
+
+</div>
+
+</div>
+
+</body>
+</html>
