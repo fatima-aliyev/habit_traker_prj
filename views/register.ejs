@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Register</title>
+
+<style>
+body{
+    margin:0;
+    font-family:Arial;
+    background: linear-gradient(135deg,#e0f2fe,#f8fafc);
+}
+
+.wrapper{
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+.card{
+    width:350px;
+    background:white;
+    padding:30px;
+    border-radius:15px;
+    box-shadow:0 15px 35px rgba(0,0,0,0.1);
+}
+.register-link{
+    text-align:center;
+    margin-top:20px;
+    font-size:14px;
+}
+
+.register-link a{
+    color:#0ea5e9;
+    text-decoration:none;
+}
+
+.register-link a:hover{
+    text-decoration:underline;
+}
+input{
+    width:100%;
+    padding:12px;
+    margin-top:10px;
+    border-radius:10px;
+    border:1px solid #ccc;
+}
+
+button{
+    width:100%;
+    padding:12px;
+    margin-top:15px;
+    border:none;
+    border-radius:10px;
+    background:#38bdf8;
+    color:white;
+}
+
+.error{
+    color:red;
+    font-size:12px;
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="wrapper">
+
+<div class="card">
+
+<h2>Register</h2>
+
+<form method="POST" action="/register">
+
+<input name="name" placeholder="Username" value="<%= old?.name || '' %>">
+<div class="error"><%= errors?.name || '' %></div>
+
+<input name="email" placeholder="Email" value="<%= old?.email || '' %>">
+<div class="error"><%= errors?.email || '' %></div>
+
+<input name="password" type="password" placeholder="Password">
+<div class="error"><%= errors?.password || '' %></div>
+<input name="confirm_password" type="password" placeholder="Confirm Password">
+<div class="error"><%= errors?.confirm_password || '' %></div>
+<button>Create account</button>
+
+</form>
+
+<div class="register-link">
+    Do you have an account? <a href="/login">Login here</a>
+</div>
+
+</div>
+</div>
+
+</body>
+</html>
