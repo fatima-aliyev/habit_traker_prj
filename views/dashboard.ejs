@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>SMART Dashboard</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: linear-gradient(145deg, #f0f9ff 0%, #e6f0fa 100%);
+            font-family: 'Segoe UI', Roboto, sans-serif;
+            padding: 30px 20px;
+        }
+        .container { max-width: 1200px; margin: 0 auto; }
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: white;
+            padding: 15px 25px;
+            border-radius: 40px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+            margin-bottom: 25px;
+        }
+        .nav h2 {
+            background: linear-gradient(135deg, #1e3c72, #2b4c7c);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+        .nav a {
+            text-decoration: none;
+            margin-left: 20px;
+            padding: 8px 16px;
+            border-radius: 30px;
+            transition: 0.2s;
+        }
+        .nav a[href="/stats"] { background: #0ea5e9; color: white; }
+        .nav a[href="/profile"] { background: #8b5cf6; color: white; }
+        .nav a[href="/admin"] { background: #f97316; color: white; }
+        .nav a[href="/logout"] { background: #ef4444; color: white; }
+        .stats-grid {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        .stat-card {
+            flex: 1;
+            background: white;
+            padding: 20px 12px;
+            border-radius: 28px;
+            text-align: center;
+            border-bottom: 4px solid;
+        }
+        .stat-card:nth-child(1) { border-bottom-color: #f97316; background: #fff7ed; }
+        .stat-card:nth-child(2) { border-bottom-color: #10b981; background: #ecfdf5; }
+        .stat-card:nth-child(3) { border-bottom-color: #3b82f6; background: #eff6ff; }
+        .stat-card:nth-child(4) { border-bottom-color: #a855f7; background: #faf5ff; }
+        .stat-card strong { font-size: 28px; display: block; margin-top: 8px; }
+        .card {
+            background: white;
+            border-radius: 28px;
+            padding: 20px 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 12px 24px -12px rgba(0,0,0,0.1);
+        }
+        .add-habit-form {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .add-habit-form input {
+            flex: 1;
+            padding: 12px 18px;
+            background: #f1f5f9;
+            border-radius: 60px;
+            border: none;
+        }
+        .add-habit-form button {
+            background: #0ea5e9;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 60px;
+            border: none;
+            cursor: pointer;
+        }
+        .habit-item {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+        }
+        .habit-info {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            flex: 2;
+        }
+        .toggle-form {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: #f8fafc;
+            padding: 8px 18px;
+            border-radius: 60px;
+        }
+        .time-input {
+            width: 85px;
+            padding: 8px 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 40px;
+            text-align: center;
+        }
+        .habit-name { font-weight: 700; font-size: 18px; }
+        .streak-badge {
+            background: #fef9c3;
+            color: #854d0e;
+            padding: 4px 12px;
+            border-radius: 40px;
+            font-size: 13px;
+            font-weight: bold;
+        }
+        .delete-btn {
+            background: #fee2e2;
+            color: #b91c1c;
+            padding: 8px 20px;
+            border-radius: 40px;
+            border: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="nav">
+        <h2>🚀 SMART Habit Tracker</h2>
+        <div>
+            <a href="/stats">📊 Statistics</a>
+            <a href="/profile">👤 Profile</a>
+            <% if (currentUser.role === 'admin') { %>
+                <a href="/admin">⚙️ Admin</a>
+            <% } %>
+            <a href="/logout">🚪 Logout</a>
+        </div>
+    </div>
+
+    <div class="stats-grid">
+        <div class="stat-card">🔥 Today's Score<br><strong><%= todayProductivity %></strong><span> / 100</span></div>
+        <div class="stat-card">✅ Total Completions<br><strong><%= totalCompleted %></strong></div>
+        <div class="stat-card">⏱️ Total Time<br><strong><%= Math.floor(totalMinutes/60) %>h <%= totalMinutes%60 %>m</strong></div>
+        <div class="stat-card">🏆 Best Habit<br><strong><%= bestHabit ? bestHabit.name : '—' %></strong><span> (<%= bestHabit ? bestHabit.completions : 0 %> days)</span></div>
+    </div>
+
+    <div class="card">
+        <h3>➕ Add New Habit</h3>
+        <form method="POST" action="/habits" class="add-habit-form">
+            <input type="text" name="name" placeholder="Habit name" required>
+            <input type="text" name="description" placeholder="Short description">
+            <button type="submit">Add</button>
+        </form>
+    </div>
+
+    <% habits.forEach(h => { %>
+        <div class="card">
+            <div class="habit-item">
+                <div class="habit-info">
+                    <form method="POST" action="/habits/toggle" class="toggle-form">
+                        <input type="hidden" name="habit_id" value="<%= h.id %>">
+                        <input type="number" name="duration" class="time-input" placeholder="min" value="<%= durations[h.id] || 0 %>">
+                        <label style="display:flex; align-items:center; gap:8px; cursor:pointer;">
+                            <input type="checkbox" onchange="this.form.submit()" <%= completedToday.includes(h.id) ? "checked" : "" %>>
+                            <span class="habit-name"><%= h.name %></span>
+                        </label>
+                       
+                    </form>
+                    <% if (h.description) { %>
+                        <div class="habit-desc"><%= h.description %></div>
+                    <% } %>
+                </div>
+                <form method="POST" action="/habits/delete">
+                    <input type="hidden" name="habit_id" value="<%= h.id %>">
+                    <button type="submit" class="delete-btn">🗑 Delete</button>
+                </form>
+            </div>
+        </div>
+    <% }) %>
+</div>
+</body>
+</html>
