@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Statistics</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { font-family: Arial; background: #f1f5f9; padding: 20px; }
+        .container { max-width: 1000px; margin: auto; }
+        .card { background: white; border-radius: 16px; padding: 20px; margin-bottom: 20px; }
+        canvas { max-height: 250px; width: 100%; }
+        .back { background: #0ea5e9; color: white; padding: 6px 15px; border-radius: 30px; text-decoration: none; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+        .no-data { text-align: center; color: gray; padding: 20px; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <a href="/" class="back">← Back</a>
+    <h1>📊 Statistics</h1>
+
+    <div class="card"><h3>Weekly</h3><canvas id="weeklyChart"></canvas><div id="weeklyMsg" class="no-data" style="display:none">No data</div></div>
+    <div class="card"><h3>Monthly</h3><canvas id="monthlyChart"></canvas><div id="monthlyMsg" class="no-data" style="display:none">No data</div></div>
+    <div class="card"><h3>Habit Comparison</h3><canvas id="habitChart"></canvas></div>
+    <div class="card"><h3>Productivity Trend</h3><canvas id="trendChart"></canvas></div>
+    <div class="card">
+        <h3>Habit Stats</h3>
+        <table><tr><th>Habit</th><th>Completions</th><th>Minutes</th></tr>
+        <% habitStats.forEach(h => { %>
+            <tr><td><%= h.name %></td><td><%= h.total_completions || 0 %></td><td><%= h.total_minutes || 0 %></td></tr>
+        <% }) %>
+        </table>
+    </div>
+</div>
+<script>
+    const weekly = <%- JSON.stringify(weekly) %>;
+    const monthly = <%- JSON.stringify(monthly) %>;
+    const habits = <%- JSON.stringify(habitStats) %>;
+    const trend = <%- JSON.stringify(productivityTrend) %>;
+
+    function makeChart(id, type, labels, data, color) {
+        const ctx = document.getElementById(id)?.getContext('2d');
+        if(ctx && labels.length) new Chart(ctx, { type, data: { labels, datasets: [{ label: '', data, backgroundColor: color, borderColor: color }] } });
+        else if(document.getElementById(id)) document.getElementById(id).style.display = 'none';
+    }
+    if(weekly && weekly.length) makeChart('weeklyChart', 'bar', weekly.map(w=>w.log_date.slice(5)), weekly.map(w=>w.completed), '#3b82f6');
+    else document.getElementById('weeklyMsg').style.display = 'block';
+    if(monthly && monthly.length) makeChart('monthlyChart', 'line', monthly.map(m=>m.date.slice(5)), monthly.map(m=>m.completed), '#f97316');
+    else document.getElementById('monthlyMsg').style.display = 'block';
+    if(habits && habits.length) makeChart('habitChart', 'bar', habits.map(h=>h.name), habits.map(h=>h.total_completions), '#8b5cf6');
+    if(trend && trend.length) makeChart('trendChart', 'line', trend.map(t=>t.stat_date.slice(5)), trend.map(t=>t.productivity_score), '#ef4444');
+</script>
+</body>
+</html>
