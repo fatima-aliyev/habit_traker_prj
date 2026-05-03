@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Login</title>
+<style>
+body{
+    margin:0;
+    font-family:Arial;
+    background: linear-gradient(135deg,#e0f2fe,#f8fafc);
+}
+.wrapper{
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+.card{
+    width:350px;
+    background:white;
+    padding:30px;
+    border-radius:15px;
+    box-shadow:0 15px 35px rgba(0,0,0,0.1);
+}
+h2{
+    text-align:center;
+    margin-bottom:20px;
+}
+input{
+    width:100%;
+    padding:12px;
+    margin-top:10px;
+    border-radius:10px;
+    border:1px solid #ccc;
+}
+button{
+    width:100%;
+    padding:12px;
+    margin-top:15px;
+    border:none;
+    border-radius:10px;
+    background:#38bdf8;
+    color:white;
+    cursor:pointer;
+}
+button:hover{
+    background:#0ea5e9;
+}
+.error{
+    color:red;
+    text-align:center;
+    margin-top:10px;
+}
+.register-link{
+    text-align:center;
+    margin-top:20px;
+    font-size:14px;
+}
+.register-link a{
+    color:#0ea5e9;
+    text-decoration:none;
+}
+.register-link a:hover{
+    text-decoration:underline;
+}
+</style>
+</head>
+<body>
+<div class="wrapper">
+<div class="card">
+<h2>Login</h2>
+<form method="POST" action="/login">
+<input name="name" placeholder="Username">
+<input name="password" type="password" placeholder="Password">
+<button>Login</button>
+</form>
+<div class="error"><%= message || '' %></div>
+<div class="register-link">
+    Don't have an account? <a href="/register">Register here</a>
+</div>
+</div>
+</div>
+</body>
+</html>
